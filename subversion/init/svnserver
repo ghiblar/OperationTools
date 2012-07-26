@@ -1,0 +1,77 @@
+#!/bin/sh
+# chkconfig: 35 99 20
+# description: Subversion Repository Server
+# processname: svnserve
+
+SVNCOMMAND=/usr/bin/svnserve
+PIDFILE=/var/run/svnserve.pid
+SVNDIR=/var/svn/
+SVNOPTION=" -d --pid-file $PIDFILE -r $SVNDIR"
+
+# 引数チェック
+if [ $# -ne 1 ]; then
+        echo "usage: `basename $0` {start|stop|restart|reload|status}"
+        exit 1
+fi
+
+
+#########################################################
+# Operation Check
+if [ $1 = "start" ]
+then
+        OPERATION=start
+elif [ $1 = "stop" ]
+then
+        OPERATION=stop
+elif [ $1 = "restart" ]
+then
+        OPERATION=restart
+elif [ $1 = "status" ]
+then
+        OPERATION=status
+else
+        echo "operation is \"start\" or \"sop\" or "\restart"\ or \"status\""
+        exit 0
+fi
+
+
+#########################################################
+# Do Operation
+case $OPERATION in
+        start)
+                echo -n "Starting SVN Server: "
+                $SVNCOMMAND $SVNOPTION
+                if [ $? -ne 0 ];
+                then
+                        echo "[ NG ]"
+                else
+                        echo "[ OK ]"
+                fi
+                ;;
+        stop)
+                echo -n "Stopping SVN Server: "
+                kill -HUP `cat $PIDFILE`
+                if [ $? -ne 0 ];
+                then
+                        echo "[ NG ]"
+                else
+                        echo "[ OK ]"
+                        rm $PIDFILE
+                fi
+                ;;
+        restart|reload)
+                $0 stop
+                sleep 3
+                $0 start
+                ;;
+        status)
+                echo -n "SVN Server is "
+                if [ -f $PIDFILE ];
+                then
+                        echo "running..."
+                else
+                        echo "stop."
+                fi
+                ;;
+esac
+
