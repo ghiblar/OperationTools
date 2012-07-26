@@ -14,12 +14,12 @@ Git
 CUIコミットのエディタ変更
 ============================
 
-環境変数の $EDITOR を参照しているらしい。
+環境変数の $GIT_EDITOR を参照しているらしい。無ければ $EDITOR
 一時的に設定するなら以下のように入力。
 
 .. code-block:: bash
 
-    $ export EDITOR=vi
+    $ export GIT_EDITOR=vi
 
 当然、自動で設定されるようにするには .bashrc 辺りに設定が必要
 
